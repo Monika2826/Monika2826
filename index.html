@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HR Daily Task Checklist</title>
+  <title>HR Smart Task Management</title>
   <style>
     * {
       margin: 0;
@@ -19,11 +19,11 @@
     }
     
     .container {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
       background: white;
       padding: 30px;
-      rounded: 15px;
+      border-radius: 15px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
     }
     
@@ -41,18 +41,68 @@
       font-size: 14px;
     }
     
+    /* Tabs Navigation */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .tab {
+      padding: 12px 24px;
+      background: #f8f9fa;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .tab:hover {
+      background: #e9ecef;
+    }
+    
+    .tab.active {
+      background: #667eea;
+      color: white;
+    }
+    
+    /* Tab Content */
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Stats with Color Coding */
     .stats {
       background: #f8f9fa;
       padding: 20px;
-      rounded: 10px;
+      border-radius: 10px;
       margin-bottom: 30px;
       text-align: center;
     }
     
     .stats h2 {
-      color: #28a745;
       font-size: 24px;
       margin-bottom: 10px;
+      font-weight: bold;
+    }
+    
+    .stats h2.completed-green {
+      color: #28a745;
+    }
+    
+    .stats h2.inprogress-yellow {
+      color: #ffc107;
+    }
+    
+    .stats h2.notcompleted-red {
+      color: #dc3545;
     }
     
     .stats p {
@@ -60,6 +110,44 @@
       font-size: 16px;
     }
     
+    /* Status Legend */
+    .status-legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 8px;
+      border: 2px solid #e9ecef;
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    
+    .status-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+    }
+    
+    .status-color.green {
+      background: #28a745;
+    }
+    
+    .status-color.yellow {
+      background: #ffc107;
+    }
+    
+    .status-color.red {
+      background: #dc3545;
+    }
+    
+    /* Category */
     .category {
       margin-bottom: 25px;
     }
@@ -70,31 +158,71 @@
       font-size: 18px;
       padding-bottom: 10px;
       border-bottom: 2px solid #667eea;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     
+    .frequency-badge {
+      background: #ffc107;
+      color: #333;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    /* TASK WITH COLOR CODING */
     .task {
       display: flex;
       align-items: center;
       padding: 15px;
       margin-bottom: 10px;
-      background: #f8f9fa;
-      rounded: 8px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s;
+      border: 2px solid;
     }
     
     .task:hover {
-      background: #e9ecef;
       transform: translateX(5px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     
-    .task.completed {
-      background: #d4edda;
-      opacity: 0.8;
+    /* COMPLETED = GREEN */
+    .task.status-completed {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      border-color: #28a745;
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
     }
     
-    .task.completed label {
-      color: #28a745;
+    .task.status-completed label {
+      color: #155724;
+      font-weight: 600;
+    }
+    
+    /* IN PROGRESS = YELLOW */
+    .task.status-inprogress {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border-color: #ffc107;
+      box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+    }
+    
+    .task.status-inprogress label {
+      color: #856404;
+      font-weight: 500;
+    }
+    
+    /* NOT COMPLETED = RED */
+    .task.status-notcompleted {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      border-color: #dc3545;
+      box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+    }
+    
+    .task.status-notcompleted label {
+      color: #721c24;
+      font-weight: 500;
     }
     
     .task input[type="checkbox"] {
@@ -106,158 +234,445 @@
     
     .task label {
       font-size: 16px;
-      color: #333;
       cursor: pointer;
       flex: 1;
+    }
+    
+    .task .details {
+      display: flex;
+      gap: 15px;
+      align-items: center;
     }
     
     .task .time {
       font-size: 12px;
       color: #666;
-      margin-left: 10px;
     }
     
-    .add-task-btn {
+    .status-indicator {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .status-completed .status-indicator {
+      background: #28a745;
+      color: white;
+    }
+    
+    .status-inprogress .status-indicator {
+      background: #ffc107;
+      color: #333;
+    }
+    
+    .status-notcompleted .status-indicator {
+      background: #dc3545;
+      color: white;
+    }
+    
+    /* Buttons */
+    .btn {
       background: #667eea;
       color: white;
-      padding: 15px 30px;
+      padding: 12px 24px;
       border: none;
-      rounded: 8px;
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 14px;
       cursor: pointer;
-      width: 100%;
-      margin-top: 20px;
+      margin: 5px;
       transition: background 0.3s;
     }
     
-    .add-task-btn:hover {
+    .btn:hover {
       background: #5568d3;
     }
     
-    .export-btn {
+    .btn-success {
       background: #28a745;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      rounded: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      margin: 10px 5px;
     }
     
-    .export-btn:hover {
+    .btn-success:hover {
       background: #218838;
+    }
+    
+    .btn-warning {
+      background: #ffc107;
+      color: #333;
+    }
+    
+    .btn-warning:hover {
+      background: #e0a800;
     }
     
     .button-group {
       text-align: center;
       margin-top: 30px;
     }
+    
+    /* New Employee Form */
+    .employee-form {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .employee-form input,
+    .employee-form select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    
+    .new-employee-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border: 2px solid #667eea;
+    }
+    
+    .new-employee-card h4 {
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+    
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📋 HR Daily Task Checklist</h1>
+    <h1>📋 HR Smart Task Management</h1>
     <p class="date" id="currentDate"></p>
     
-    <div class="stats">
-      <h2 id="completionRate">0%</h2>
-      <p id="taskCount">0 / 0 tasks completed</p>
-    </div>
-    
-    <!-- ATTENDANCE CATEGORY -->
-    <div class="category">
-      <h3>📊 Attendance (5 tasks)</h3>
-      <div class="task" data-id="1">
-        <input type="checkbox" id="task1" onclick="toggleTask(1)">
-        <label for="task1">Review daily attendance sheet</label>
-        <span class="time" id="time1"></span>
+    <!-- Status Legend -->
+    <div class="status-legend">
+      <div class="status-item">
+        <div class="status-color green"></div>
+        <span>✅ Completed</span>
       </div>
-      <div class="task" data-id="2">
-        <input type="checkbox" id="task2" onclick="toggleTask(2)">
-        <label for="task2">Call absentees (max 3 calls)</label>
-        <span class="time" id="time2"></span>
+      <div class="status-item">
+        <div class="status-color yellow"></div>
+        <span>🔄 In Progress</span>
       </div>
-      <div class="task" data-id="3">
-        <input type="checkbox" id="task3" onclick="toggleTask(3)">
-        <label for="task3">Approve time-off requests</label>
-        <span class="time" id="time3"></span>
-      </div>
-      <div class="task" data-id="4">
-        <input type="checkbox" id="task4" onclick="toggleTask(4)">
-        <label for="task4">Check late arrivals & document</label>
-        <span class="time" id="time4"></span>
-      </div>
-      <div class="task" data-id="5">
-        <input type="checkbox" id="task5" onclick="toggleTask(5)">
-        <label for="task5">Verify shift substitutions</label>
-        <span class="time" id="time5"></span>
+      <div class="status-item">
+        <div class="status-color red"></div>
+        <span>❌ Not Completed</span>
       </div>
     </div>
     
-    <!-- STAFF MANAGEMENT CATEGORY -->
-    <div class="category">
-      <h3>👥 Staff Management (4 tasks)</h3>
-      <div class="task" data-id="6">
-        <input type="checkbox" id="task6" onclick="toggleTask(6)">
-        <label for="task6">Morning staff briefing check</label>
-        <span class="time" id="time6"></span>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('daily')">📅 Daily Tasks</button>
+      <button class="tab" onclick="showTab('repetitive')">🔄 Repetitive Tasks</button>
+      <button class="tab" onclick="showTab('frequency')">⏱️ Frequency Tasks</button>
+      <button class="tab" onclick="showTab('onboarding')">👥 New Employees</button>
+      <button class="tab" onclick="showTab('urgent')">🚨 Urgent Tasks</button>
+    </div>
+    
+    <!-- DAILY TASKS TAB -->
+    <div id="daily" class="tab-content active">
+      <div class="stats">
+        <h2 id="dailyRate" class="notcompleted-red">0%</h2>
+        <p id="dailyCount">0 / 10 tasks completed</p>
       </div>
-      <div class="task" data-id="7">
-        <input type="checkbox" id="task7" onclick="toggleTask(7)">
-        <label for="task7">Verify staff grooming/uniform</label>
-        <span class="time" id="time7"></span>
+      
+      <div class="category">
+        <h3>
+          📊 Attendance
+          <span class="frequency-badge">Daily</span>
+        </h3>
+        <div class="task status-notcompleted" data-id="daily-1">
+          <input type="checkbox" id="daily1" onclick="toggleTask('daily', 1)">
+          <label for="daily1">Review daily attendance sheet</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time1"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="daily-2">
+          <input type="checkbox" id="daily2" onclick="toggleTask('daily', 2)">
+          <label for="daily2">Call absentees (max 3 calls)</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time2"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="daily-3">
+          <input type="checkbox" id="daily3" onclick="toggleTask('daily', 3)">
+          <label for="daily3">Approve time-off requests</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time3"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="daily-4">
+          <input type="checkbox" id="daily4" onclick="toggleTask('daily', 4)">
+          <label for="daily4">Check late arrivals & document</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time4"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="daily-5">
+          <input type="checkbox" id="daily5" onclick="toggleTask('daily', 5)">
+          <label for="daily5">Verify shift substitutions</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time5"></span>
+          </div>
+        </div>
       </div>
-      <div class="task" data-id="8">
-        <input type="checkbox" id="task8" onclick="toggleTask(8)">
-        <label for="task8">Assign floor duties</label>
-        <span class="time" id="time8"></span>
+      
+      <div class="category">
+        <h3>
+          👥 Staff Management
+          <span class="frequency-badge">Daily</span>
+        </h3>
+        <div class="task status-notcompleted" data-id="daily-6">
+          <input type="checkbox" id="daily6" onclick="toggleTask('daily', 6)">
+          <label for="daily6">Morning staff briefing check</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time6"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="daily-7">
+          <input type="checkbox" id="daily7" onclick="toggleTask('daily', 7)">
+          <label for="daily7">Verify staff grooming/uniform</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time7"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="daily-8">
+          <input type="checkbox" id="daily8" onclick="toggleTask('daily', 8)">
+          <label for="daily8">Assign floor duties</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time8"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="daily-9">
+          <input type="checkbox" id="daily9" onclick="toggleTask('daily', 9)">
+          <label for="daily9">Track break timings</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time9"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="daily-10">
+          <input type="checkbox" id="daily10" onclick="toggleTask('daily', 10)">
+          <label for="daily10">Evening staff feedback</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="time" id="daily-time10"></span>
+          </div>
+        </div>
       </div>
-      <div class="task" data-id="9">
-        <input type="checkbox" id="task9" onclick="toggleTask(9)">
-        <label for="task9">Evening staff feedback</label>
-        <span class="time" id="time9"></span>
+      
+      <div class="button-group">
+        <button class="btn btn-warning" onclick="resetDailyTasks()">🔄 Reset for Tomorrow</button>
+        <button class="btn btn-success" onclick="exportToCSV('daily')">📤 Export Daily</button>
       </div>
     </div>
     
-    <!-- COMPLIANCE CATEGORY -->
-    <div class="category">
-      <h3>⚖️ Compliance (3 tasks)</h3>
-      <div class="task" data-id="10">
-        <input type="checkbox" id="task10" onclick="toggleTask(10)">
-        <label for="task10">Check mandatory training certifications</label>
-        <span class="time" id="time10"></span>
+    <!-- REPETITIVE TASKS TAB -->
+    <div id="repetitive" class="tab-content">
+      <div class="stats">
+        <h2 id="repetitiveRate" class="notcompleted-red">0%</h2>
+        <p id="repetitiveCount">0 / 5 tasks completed</p>
       </div>
-      <div class="task" data-id="11">
-        <input type="checkbox" id="task11" onclick="toggleTask(11)">
-        <label for="task11">Verify employee documents current</label>
-        <span class="time" id="time11"></span>
+      
+      <div class="category">
+        <h3>
+          💰 Payroll
+          <span class="frequency-badge">Monthly</span>
+        </h3>
+        <div class="task status-notcompleted" data-id="rep-1">
+          <input type="checkbox" id="rep1" onclick="toggleTask('rep', 1)">
+          <label for="rep1">Process monthly payroll</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">End of Month</span>
+            <span class="time" id="rep-time1"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="rep-2">
+          <input type="checkbox" id="rep2" onclick="toggleTask('rep', 2)">
+          <label for="rep2">Reconcile attendance with payroll</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">End of Month</span>
+            <span class="time" id="rep-time2"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="rep-3">
+          <input type="checkbox" id="rep3" onclick="toggleTask('rep', 3)">
+          <label for="rep3">Approve overtime requests</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">End of Month</span>
+            <span class="time" id="rep-time3"></span>
+          </div>
+        </div>
       </div>
-      <div class="task" data-id="12">
-        <input type="checkbox" id="task12" onclick="toggleTask(12)">
-        <label for="task12">Log policy changes</label>
-        <span class="time" id="time12"></span>
+      
+      <div class="category">
+        <h3>
+          ⚖️ Compliance
+          <span class="frequency-badge">Quarterly</span>
+        </h3>
+        <div class="task status-notcompleted" data-id="rep-4">
+          <input type="checkbox" id="rep4" onclick="toggleTask('rep', 4)">
+          <label for="rep4">Quarterly compliance audit</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">Every 3 Months</span>
+            <span class="time" id="rep-time4"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="rep-5">
+          <input type="checkbox" id="rep5" onclick="toggleTask('rep', 5)">
+          <label for="rep5">Review employee policies</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">Every 3 Months</span>
+            <span class="time" id="rep-time5"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="button-group">
+        <button class="btn btn-success" onclick="exportToCSV('rep')">📤 Export Repetitive</button>
       </div>
     </div>
     
-    <!-- PAYROLL CATEGORY -->
-    <div class="category">
-      <h3>💰 Payroll (2 tasks)</h3>
-      <div class="task" data-id="13">
-        <input type="checkbox" id="task13" onclick="toggleTask(13)">
-        <label for="task13">Process payroll adjustments</label>
-        <span class="time" id="time13"></span>
+    <!-- FREQUENCY TASKS TAB -->
+    <div id="frequency" class="tab-content">
+      <div class="stats">
+        <h2 id="frequencyRate" class="notcompleted-red">0%</h2>
+        <p id="frequencyCount">0 / 5 tasks completed</p>
       </div>
-      <div class="task" data-id="14">
-        <input type="checkbox" id="task14" onclick="toggleTask(14)">
-        <label for="task14">Reconcile attendance with payroll</label>
-        <span class="time" id="time14"></span>
+      
+      <div class="category">
+        <h3>
+          📚 Training & Certifications
+          <span class="frequency-badge">As Required</span>
+        </h3>
+        <div class="task status-notcompleted" data-id="freq-1">
+          <input type="checkbox" id="freq1" onclick="toggleTask('freq', 1)">
+          <label for="freq1">Check mandatory training certifications</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">Monthly</span>
+            <span class="time" id="freq-time1"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="freq-2">
+          <input type="checkbox" id="freq2" onclick="toggleTask('freq', 2)">
+          <label for="freq2">Verify employee documents current</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">As Needed</span>
+            <span class="time" id="freq-time2"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="freq-3">
+          <input type="checkbox" id="freq3" onclick="toggleTask('freq', 3)">
+          <label for="freq3">Schedule refresher training</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">As Needed</span>
+            <span class="time" id="freq-time3"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="category">
+        <h3>
+          📋 Administrative
+          <span class="frequency-badge">As Required</span>
+        </h3>
+        <div class="task status-notcompleted" data-id="freq-4">
+          <input type="checkbox" id="freq4" onclick="toggleTask('freq', 4)">
+          <label for="freq4">Log policy changes</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">When Needed</span>
+            <span class="time" id="freq-time4"></span>
+          </div>
+        </div>
+        <div class="task status-notcompleted" data-id="freq-5">
+          <input type="checkbox" id="freq5" onclick="toggleTask('freq', 5)">
+          <label for="freq5">Update employee handbook</label>
+          <div class="details">
+            <span class="status-indicator">Not Completed</span>
+            <span class="frequency-badge">Annually</span>
+            <span class="time" id="freq-time5"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="button-group">
+        <button class="btn btn-success" onclick="exportToCSV('freq')">📤 Export Frequency</button>
       </div>
     </div>
     
+    <!-- NEW EMPLOYEES TAB -->
+    <div id="onboarding" class="tab-content">
+      <div class="employee-form">
+        <h3 style="margin-bottom: 15px; color: #667eea;">➕ Add New Employee</h3>
+        <input type="text" id="newEmpName" placeholder="Employee Name">
+        <input type="text" id="newEmpPosition" placeholder="Position">
+        <input type="text" id="newEmpBranch" placeholder="Branch/Store">
+        <input type="date" id="newEmpJoinDate" placeholder="Joining Date">
+        <button class="btn btn-success" onclick="addNewEmployee()">➕ Add Employee</button>
+      </div>
+      
+      <div id="newEmployeesList">
+        <!-- New employees will appear here -->
+      </div>
+      
+      <div class="button-group">
+        <button class="btn btn-success" onclick="exportToCSV('onboarding')">📤 Export Onboarding Data</button>
+      </div>
+    </div>
+    
+    <!-- URGENT TASKS TAB -->
+    <div id="urgent" class="tab-content">
+      <div class="employee-form">
+        <h3 style="margin-bottom: 15px; color: #dc3545;">⚠️ Add Urgent Task</h3>
+        <input type="text" id="urgentTaskName" placeholder="Task Name">
+        <select id="urgentPriority">
+          <option value="high">High Priority</option>
+          <option value="medium">Medium Priority</option>
+          <option value="low">Low Priority</option>
+        </select>
+        <button class="btn btn-warning" onclick="addUrgentTask()">⚠️ Add Task</button>
+      </div>
+      
+      <div id="urgentTasksList">
+        <!-- Urgent tasks will appear here -->
+      </div>
+      
+      <div class="button-group">
+        <button class="btn btn-success" onclick="exportToCSV('urgent')">📤 Export Urgent Tasks</button>
+        <button class="btn btn-warning" onclick="clearUrgentTasks()">🗑️ Clear All</button>
+      </div>
+    </div>
+    
+    <!-- GLOBAL BUTTONS -->
     <div class="button-group">
-      <button class="export-btn" onclick="exportToSheets()">📤 Export to Google Sheets</button>
-      <button class="export-btn" onclick="sendEmail()">📧 Email to Management</button>
+      <button class="btn btn-success" onclick="emailToManagement()">📧 Email Summary to Management</button>
+      <button class="btn" onclick="clearAllData()">🗑️ Clear All Data</button>
     </div>
   </div>
   
@@ -267,147 +682,379 @@
     const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDate').textContent = today.toLocaleDateString('en-IN', dateOptions);
     
-    // Load saved tasks from localStorage
-    function loadTasks() {
-      for (let i = 1; i <= 14; i++) {
-        const checked = localStorage.getItem(`hr-task-${i}`) === 'true';
-        const time = localStorage.getItem(`hr-task-${i}-time`);
-        
-        document.getElementById(`task${i}`).checked = checked;
-        if (checked) {
-          document.querySelector(`.task[data-id="${i}"]`).classList.add('completed');
-        }
-        if (time) {
-          document.getElementById(`time${i}`).textContent = time;
-        }
-      }
-      updateStats();
+    // Tab switching
+    function showTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      
+      // Update stats for current tab
+      updateStats(tabId);
     }
     
-    // Toggle task and save
-    function toggleTask(id) {
-      const checkbox = document.getElementById(`task${id}`);
-      const taskElement = document.querySelector(`.task[data-id="${id}"]`);
-      const timeElement = document.getElementById(`time${id}`);
+    // Toggle task and save with COLOR CODING
+    function toggleTask(category, id) {
+      const checkbox = document.getElementById(`${category}${id}`);
+      const taskElement = document.querySelector(`.task[data-id="${category}-${id}"]`);
+      const timeElement = document.getElementById(`${category}-time${id}`);
+      const dateKey = category === 'daily' ? `daily-${today.toDateString()}` : category;
+      const statusIndicator = taskElement.querySelector('.status-indicator');
       
       if (checkbox.checked) {
-        taskElement.classList.add('completed');
+        // ✅ COMPLETED = GREEN
+        taskElement.classList.remove('status-notcompleted');
+        taskElement.classList.add('status-completed');
+        statusIndicator.textContent = 'Completed';
+        
         const now = new Date();
         const time = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
         timeElement.textContent = time;
         
-        // Save to localStorage
-        localStorage.setItem(`hr-task-${id}`, 'true');
-        localStorage.setItem(`hr-task-${id}-time`, time);
+        localStorage.setItem(`${dateKey}-task-${id}`, 'true');
+        localStorage.setItem(`${dateKey}-task-${id}-time`, time);
       } else {
-        taskElement.classList.remove('completed');
+        // ❌ NOT COMPLETED = RED
+        taskElement.classList.remove('status-completed');
+        taskElement.classList.add('status-notcompleted');
+        statusIndicator.textContent = 'Not Completed';
         timeElement.textContent = '';
         
-        // Remove from localStorage
-        localStorage.setItem(`hr-task-${id}`, 'false');
-        localStorage.removeItem(`hr-task-${id}-time`);
+        localStorage.setItem(`${dateKey}-task-${id}`, 'false');
+        localStorage.removeItem(`${dateKey}-task-${id}-time`);
       }
       
-      updateStats();
+      updateStats(category);
     }
     
-    // Update completion statistics
-    function updateStats() {
-      const total = 14;
-      const completed = document.querySelectorAll('input[type="checkbox"]:checked').length;
-      const percentage = Math.round((completed / total) * 100);
+    // Update statistics with COLOR CHANGES
+    function updateStats(category) {
+      let total = 0;
+      let completed = 0;
       
-      document.getElementById('taskCount').textContent = `${completed} / ${total} tasks completed`;
-      document.getElementById('completionRate').textContent = `${percentage}%`;
+      if (category === 'daily') {
+        total = 10;
+        const dateKey = `daily-${today.toDateString()}`;
+        for (let i = 1; i <= 10; i++) {
+          if (localStorage.getItem(`${dateKey}-task-${i}`) === 'true') completed++;
+        }
+      } else if (category === 'rep') {
+        total = 5;
+        for (let i = 1; i <= 5; i++) {
+          if (localStorage.getItem(`rep-task-${i}`) === 'true') completed++;
+        }
+      } else if (category === 'freq') {
+        total = 5;
+        for (let i = 1; i <= 5; i++) {
+          if (localStorage.getItem(`freq-task-${i}`) === 'true') completed++;
+        }
+      }
       
-      // Change color based on percentage
-      const rateElement = document.getElementById('completionRate');
+      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+      
+      const rateElement = document.getElementById(`${category}Rate`);
+      document.getElementById(`${category}Count`).textContent = `${completed} / ${total} tasks completed`;
+      rateElement.textContent = `${percentage}%`;
+      
+      // 🎨 COLOR CODING FOR STATS
+      rateElement.classList.remove('completed-green', 'inprogress-yellow', 'notcompleted-red');
+      
       if (percentage >= 80) {
-        rateElement.style.color = '#28a745';
-      } else if (percentage >= 50) {
-        rateElement.style.color = '#ffc107';
+        // ✅ GREEN - Completed (80%+)
+        rateElement.classList.add('completed-green');
+      } else if (percentage >= 30) {
+        // 🔄 YELLOW - In Progress (30-79%)
+        rateElement.classList.add('inprogress-yellow');
       } else {
-        rateElement.style.color = '#dc3545';
+        // ❌ RED - Not Completed (<30%)
+        rateElement.classList.add('notcompleted-red');
       }
     }
     
-    // Export data to Google Sheets (via API)
-    function exportToSheets() {
-      const data = {
-        date: new Date().toLocaleDateString('en-IN'),
-        tasks: []
+    // Reset daily tasks for tomorrow
+    function resetDailyTasks() {
+      const dateKey = `daily-${today.toDateString()}`;
+      for (let i = 1; i <= 10; i++) {
+        localStorage.setItem(`${dateKey}-task-${i}`, 'false');
+        localStorage.removeItem(`${dateKey}-task-${i}-time`);
+        
+        // Reset color to RED
+        const taskElement = document.querySelector(`.task[data-id="daily-${i}"]`);
+        const statusIndicator = taskElement.querySelector('.status-indicator');
+        taskElement.classList.remove('status-completed');
+        taskElement.classList.add('status-notcompleted');
+        statusIndicator.textContent = 'Not Completed';
+        document.getElementById(`daily-time${i}`).textContent = '';
+      }
+      updateStats('daily');
+      alert('Daily tasks reset! Ready for tomorrow ✨');
+    }
+    
+    // Add new employee (same as before)
+    function addNewEmployee() {
+      const name = document.getElementById('newEmpName').value;
+      const position = document.getElementById('newEmpPosition').value;
+      const branch = document.getElementById('newEmpBranch').value;
+      const joinDate = document.getElementById('newEmpJoinDate').value;
+      
+      if (!name || !position || !branch || !joinDate) {
+        alert('Please fill all fields!');
+        return;
+      }
+      
+      const empId = Date.now();
+      const employee = {
+        id: empId,
+        name: name,
+        position: position,
+        branch: branch,
+        joinDate: joinDate
       };
       
-      for (let i = 1; i <= 14; i++) {
-        const completed = localStorage.getItem(`hr-task-${i}`) === 'true';
-        const time = localStorage.getItem(`hr-task-${i}-time`) || '-';
-        data.tasks.push({
-          id: i,
-          completed: completed,
-          time: time
-        });
-      }
+      localStorage.setItem(`employee-${empId}`, JSON.stringify(employee));
       
-      // Create CSV download
-      let csv = 'Task ID,Task Name,Completed,Completed Time\n';
-      const taskNames = [
-        'Review daily attendance sheet',
-        'Call absentees (max 3 calls)',
-        'Approve time-off requests',
-        'Check late arrivals & document',
-        'Verify shift substitutions',
-        'Morning staff briefing check',
-        'Verify staff grooming/uniform',
-        'Assign floor duties',
-        'Evening staff feedback',
-        'Check mandatory training certifications',
-        'Verify employee documents current',
-        'Log policy changes',
-        'Process payroll adjustments',
-        'Reconcile attendance with payroll'
+      const checklist = [
+        { task: 'Collect documents (ID, resume, certificates)', completed: false },
+        { task: 'Create employee profile', completed: false },
+        { task: 'Assign workspace & equipment', completed: false },
+        { task: 'Orientation training', completed: false },
+        { task: 'First week check-in', completed: false }
       ];
       
-      for (let i = 1; i <= 14; i++) {
-        csv += `${i},${taskNames[i-1]},${data.tasks[i-1].completed},${data.tasks[i-1].time}\n`;
+      localStorage.setItem(`onboarding-${empId}`, JSON.stringify(checklist));
+      
+      displayNewEmployees();
+      alert(`Employee ${name} added! Onboarding checklist created ✅`);
+      
+      document.getElementById('newEmpName').value = '';
+      document.getElementById('newEmpPosition').value = '';
+      document.getElementById('newEmpBranch').value = '';
+      document.getElementById('newEmpJoinDate').value = '';
+    }
+    
+    function displayNewEmployees() {
+      const list = document.getElementById('newEmployeesList');
+      list.innerHTML = '';
+      
+      for (let i = 0; i < 100; i++) {
+        const empData = localStorage.getItem(`employee-${i}`);
+        if (empData) {
+          const emp = JSON.parse(empData);
+          const onboarding = JSON.parse(localStorage.getItem(`onboarding-${i}`) || '[]');
+          
+          const card = document.createElement('div');
+          card.className = 'new-employee-card';
+          card.innerHTML = `
+            <h4>👤 ${emp.name} - ${emp.position}</h4>
+            <p><strong>Branch:</strong> ${emp.branch}</p>
+            <p><strong>Joining Date:</strong> ${emp.joinDate}</p>
+            <div style="margin-top: 15px;">
+              <strong>Onboarding Checklist:</strong>
+              ${onboarding.map((item, idx) => `
+                <div style="margin: 8px 0; display: flex; align-items: center;">
+                  <input type="checkbox" 
+                    ${item.completed ? 'checked' : ''} 
+                    onchange="toggleOnboarding(${i}, ${idx})">
+                  <span style="margin-left: 10px;">${item.task}</span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+          list.appendChild(card);
+        }
+      }
+    }
+    
+    function toggleOnboarding(empId, taskIdx) {
+      const onboarding = JSON.parse(localStorage.getItem(`onboarding-${empId}`));
+      onboarding[taskIdx].completed = !onboarding[taskIdx].completed;
+      localStorage.setItem(`onboarding-${empId}`, JSON.stringify(onboarding));
+      displayNewEmployees();
+    }
+    
+    // Add urgent task (same as before)
+    function addUrgentTask() {
+      const name = document.getElementById('urgentTaskName').value;
+      const priority = document.getElementById('urgentPriority').value;
+      
+      if (!name) {
+        alert('Please enter task name!');
+        return;
       }
       
-      // Download CSV
+      const taskId = Date.now();
+      const task = {
+        id: taskId,
+        name: name,
+        priority: priority,
+        completed: false,
+        time: ''
+      };
+      
+      localStorage.setItem(`urgent-${taskId}`, JSON.stringify(task));
+      displayUrgentTasks();
+      
+      document.getElementById('urgentTaskName').value = '';
+    }
+    
+    function displayUrgentTasks() {
+      const list = document.getElementById('urgentTasksList');
+      list.innerHTML = '';
+      
+      for (let i = 0; i < 1000; i++) {
+        const taskData = localStorage.getItem(`urgent-${i}`);
+        if (taskData) {
+          const task = JSON.parse(taskData);
+          const div = document.createElement('div');
+          div.className = `task ${task.completed ? 'status-completed' : 'status-notcompleted'}`;
+          div.innerHTML = `
+            <input type="checkbox" 
+              ${task.completed ? 'checked' : ''} 
+              onchange="toggleUrgent(${i})">
+            <label>${task.name}</label>
+            <div class="details">
+              <span class="status-indicator">${task.completed ? 'Completed' : 'Not Completed'}</span>
+              <span class="time">${task.time}</span>
+            </div>
+          `;
+          list.appendChild(div);
+        }
+      }
+    }
+    
+    function toggleUrgent(taskId) {
+      const task = JSON.parse(localStorage.getItem(`urgent-${taskId}`));
+      task.completed = !task.completed;
+      task.time = task.completed ? new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '';
+      localStorage.setItem(`urgent-${taskId}`, JSON.stringify(task));
+      displayUrgentTasks();
+    }
+    
+    function clearUrgentTasks() {
+      for (let i = 0; i < 1000; i++) {
+        localStorage.removeItem(`urgent-${i}`);
+      }
+      displayUrgentTasks();
+      alert('All urgent tasks cleared!');
+    }
+    
+    // Export to CSV (same as before)
+    function exportToCSV(category) {
+      let csv = 'Task,Completed,Time\n';
+      
+      if (category === 'daily') {
+        const dateKey = `daily-${today.toDateString()}`;
+        const taskNames = [
+          'Review daily attendance sheet',
+          'Call absentees (max 3 calls)',
+          'Approve time-off requests',
+          'Check late arrivals & document',
+          'Verify shift substitutions',
+          'Morning staff briefing check',
+          'Verify staff grooming/uniform',
+          'Assign floor duties',
+          'Track break timings',
+          'Evening staff feedback'
+        ];
+        
+        for (let i = 1; i <= 10; i++) {
+          const completed = localStorage.getItem(`${dateKey}-task-${i}`) === 'true';
+          const time = localStorage.getItem(`${dateKey}-task-${i}-time`) || '-';
+          csv += `${taskNames[i-1]},${completed},${time}\n`;
+        }
+      }
+      
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `HR_Checklist_${new Date().toLocaleDateString('en-IN').replace(/-/g,'_')}.csv`;
+      a.download = `HR_${category}_${new Date().toLocaleDateString('en-IN').replace(/-/g,'_')}.csv`;
       a.click();
     }
     
-    // Send email to management
-    function sendEmail() {
-      const completed = document.querySelectorAll('input[type="checkbox"]:checked').length;
-      const total = 14;
-      const percentage = Math.round((completed / total) * 100);
+    // Email to management
+    function emailToManagement() {
+      const dailyTotal = 10;
+      const dailyKey = `daily-${today.toDateString()}`;
+      let dailyCompleted = 0;
+      for (let i = 1; i <= 10; i++) {
+        if (localStorage.getItem(`${dailyKey}-task-${i}`) === 'true') dailyCompleted++;
+      }
+      
+      const dailyPercent = Math.round((dailyCompleted / dailyTotal) * 100);
       
       const emailBody = `
-HR Daily Checklist Status - ${new Date().toLocaleDateString('en-IN')}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Completed: ${completed} tasks
-⏳ Pending: ${total - completed} tasks
-📊 Completion Rate: ${percentage}%
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HR Smart Task Management - Daily Summary
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Date: ${new Date().toLocaleDateString('en-IN')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-View full checklist: 
+📅 DAILY TASKS STATUS:
+✅ Completed: ${dailyCompleted} / ${dailyTotal} (${dailyPercent}%)
+
+🎨 COLOR CODING:
+✅ Green = Completed Tasks
+🔄 Yellow = In Progress (30-79%)
+❌ Red = Not Completed (<30%)
+
+View Full Checklist: 
 https://yourusername.github.io
       `;
       
-      // Open email client
-      const subject = `HR Checklist Update - ${completed}/${total} Tasks Completed (${percentage}%)`;
+      const subject = `HR Daily Summary - ${dailyCompleted}/${dailyTotal} Tasks (${dailyPercent}%)`;
       window.location.href = `mailto:hrkidsstalk028@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
     }
     
-    // Load tasks when page loads
-    loadTasks();
+    function clearAllData() {
+      if (confirm('This will delete ALL data. Are you sure?')) {
+        localStorage.clear();
+        alert('All data cleared!');
+        location.reload();
+      }
+    }
     
-    // Auto-save every 30 seconds
-    setInterval(loadTasks, 30000);
+    // Load all data with COLOR CODING
+    function loadData() {
+      // Daily tasks
+      const dateKey = `daily-${today.toDateString()}`;
+      for (let i = 1; i <= 10; i++) {
+        const checkbox = document.getElementById(`daily${i}`);
+        const timeElement = document.getElementById(`daily-time${i}`);
+        const taskElement = document.querySelector(`.task[data-id="daily-${i}"]`);
+        const statusIndicator = taskElement.querySelector('.status-indicator');
+        
+        checkbox.checked = localStorage.getItem(`${dateKey}-task-${i}`) === 'true';
+        
+        if (checkbox.checked) {
+          // ✅ GREEN
+          taskElement.classList.remove('status-notcompleted');
+          taskElement.classList.add('status-completed');
+          statusIndicator.textContent = 'Completed';
+        } else {
+          // ❌ RED
+          taskElement.classList.remove('status-completed');
+          taskElement.classList.add('status-notcompleted');
+          statusIndicator.textContent = 'Not Completed';
+        }
+        
+        const time = localStorage.getItem(`${dateKey}-task-${i}-time`);
+        if (time) {
+          timeElement.textContent = time;
+        }
+      }
+      
+      // Update stats
+      updateStats('daily');
+      updateStats('rep');
+      updateStats('freq');
+      
+      displayNewEmployees();
+      displayUrgentTasks();
+    }
+    
+    loadData();
+    setInterval(loadData, 30000);
   </script>
 </body>
 </html>
