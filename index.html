@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Daily Task Checklist</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      rounded: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    
+    .date {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    
+    .stats {
+      background: #f8f9fa;
+      padding: 20px;
+      rounded: 10px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .stats h2 {
+      color: #28a745;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .stats p {
+      color: #666;
+      font-size: 16px;
+    }
+    
+    .category {
+      margin-bottom: 25px;
+    }
+    
+    .category h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+      font-size: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #667eea;
+    }
+    
+    .task {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      margin-bottom: 10px;
+      background: #f8f9fa;
+      rounded: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .task:hover {
+      background: #e9ecef;
+      transform: translateX(5px);
+    }
+    
+    .task.completed {
+      background: #d4edda;
+      opacity: 0.8;
+    }
+    
+    .task.completed label {
+      color: #28a745;
+    }
+    
+    .task input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      margin-right: 15px;
+      cursor: pointer;
+    }
+    
+    .task label {
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .task .time {
+      font-size: 12px;
+      color: #666;
+      margin-left: 10px;
+    }
+    
+    .add-task-btn {
+      background: #667eea;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      rounded: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+    
+    .add-task-btn:hover {
+      background: #5568d3;
+    }
+    
+    .export-btn {
+      background: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      rounded: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 10px 5px;
+    }
+    
+    .export-btn:hover {
+      background: #218838;
+    }
+    
+    .button-group {
+      text-align: center;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📋 HR Daily Task Checklist</h1>
+    <p class="date" id="currentDate"></p>
+    
+    <div class="stats">
+      <h2 id="completionRate">0%</h2>
+      <p id="taskCount">0 / 0 tasks completed</p>
+    </div>
+    
+    <!-- ATTENDANCE CATEGORY -->
+    <div class="category">
+      <h3>📊 Attendance (5 tasks)</h3>
+      <div class="task" data-id="1">
+        <input type="checkbox" id="task1" onclick="toggleTask(1)">
+        <label for="task1">Review daily attendance sheet</label>
+        <span class="time" id="time1"></span>
+      </div>
+      <div class="task" data-id="2">
+        <input type="checkbox" id="task2" onclick="toggleTask(2)">
+        <label for="task2">Call absentees (max 3 calls)</label>
+        <span class="time" id="time2"></span>
+      </div>
+      <div class="task" data-id="3">
+        <input type="checkbox" id="task3" onclick="toggleTask(3)">
+        <label for="task3">Approve time-off requests</label>
+        <span class="time" id="time3"></span>
+      </div>
+      <div class="task" data-id="4">
+        <input type="checkbox" id="task4" onclick="toggleTask(4)">
+        <label for="task4">Check late arrivals & document</label>
+        <span class="time" id="time4"></span>
+      </div>
+      <div class="task" data-id="5">
+        <input type="checkbox" id="task5" onclick="toggleTask(5)">
+        <label for="task5">Verify shift substitutions</label>
+        <span class="time" id="time5"></span>
+      </div>
+    </div>
+    
+    <!-- STAFF MANAGEMENT CATEGORY -->
+    <div class="category">
+      <h3>👥 Staff Management (4 tasks)</h3>
+      <div class="task" data-id="6">
+        <input type="checkbox" id="task6" onclick="toggleTask(6)">
+        <label for="task6">Morning staff briefing check</label>
+        <span class="time" id="time6"></span>
+      </div>
+      <div class="task" data-id="7">
+        <input type="checkbox" id="task7" onclick="toggleTask(7)">
+        <label for="task7">Verify staff grooming/uniform</label>
+        <span class="time" id="time7"></span>
+      </div>
+      <div class="task" data-id="8">
+        <input type="checkbox" id="task8" onclick="toggleTask(8)">
+        <label for="task8">Assign floor duties</label>
+        <span class="time" id="time8"></span>
+      </div>
+      <div class="task" data-id="9">
+        <input type="checkbox" id="task9" onclick="toggleTask(9)">
+        <label for="task9">Evening staff feedback</label>
+        <span class="time" id="time9"></span>
+      </div>
+    </div>
+    
+    <!-- COMPLIANCE CATEGORY -->
+    <div class="category">
+      <h3>⚖️ Compliance (3 tasks)</h3>
+      <div class="task" data-id="10">
+        <input type="checkbox" id="task10" onclick="toggleTask(10)">
+        <label for="task10">Check mandatory training certifications</label>
+        <span class="time" id="time10"></span>
+      </div>
+      <div class="task" data-id="11">
+        <input type="checkbox" id="task11" onclick="toggleTask(11)">
+        <label for="task11">Verify employee documents current</label>
+        <span class="time" id="time11"></span>
+      </div>
+      <div class="task" data-id="12">
+        <input type="checkbox" id="task12" onclick="toggleTask(12)">
+        <label for="task12">Log policy changes</label>
+        <span class="time" id="time12"></span>
+      </div>
+    </div>
+    
+    <!-- PAYROLL CATEGORY -->
+    <div class="category">
+      <h3>💰 Payroll (2 tasks)</h3>
+      <div class="task" data-id="13">
+        <input type="checkbox" id="task13" onclick="toggleTask(13)">
+        <label for="task13">Process payroll adjustments</label>
+        <span class="time" id="time13"></span>
+      </div>
+      <div class="task" data-id="14">
+        <input type="checkbox" id="task14" onclick="toggleTask(14)">
+        <label for="task14">Reconcile attendance with payroll</label>
+        <span class="time" id="time14"></span>
+      </div>
+    </div>
+    
+    <div class="button-group">
+      <button class="export-btn" onclick="exportToSheets()">📤 Export to Google Sheets</button>
+      <button class="export-btn" onclick="sendEmail()">📧 Email to Management</button>
+    </div>
+  </div>
+  
+  <script>
+    // Set current date
+    const today = new Date();
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').textContent = today.toLocaleDateString('en-IN', dateOptions);
+    
+    // Load saved tasks from localStorage
+    function loadTasks() {
+      for (let i = 1; i <= 14; i++) {
+        const checked = localStorage.getItem(`hr-task-${i}`) === 'true';
+        const time = localStorage.getItem(`hr-task-${i}-time`);
+        
+        document.getElementById(`task${i}`).checked = checked;
+        if (checked) {
+          document.querySelector(`.task[data-id="${i}"]`).classList.add('completed');
+        }
+        if (time) {
+          document.getElementById(`time${i}`).textContent = time;
+        }
+      }
+      updateStats();
+    }
+    
+    // Toggle task and save
+    function toggleTask(id) {
+      const checkbox = document.getElementById(`task${id}`);
+      const taskElement = document.querySelector(`.task[data-id="${id}"]`);
+      const timeElement = document.getElementById(`time${id}`);
+      
+      if (checkbox.checked) {
+        taskElement.classList.add('completed');
+        const now = new Date();
+        const time = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        timeElement.textContent = time;
+        
+        // Save to localStorage
+        localStorage.setItem(`hr-task-${id}`, 'true');
+        localStorage.setItem(`hr-task-${id}-time`, time);
+      } else {
+        taskElement.classList.remove('completed');
+        timeElement.textContent = '';
+        
+        // Remove from localStorage
+        localStorage.setItem(`hr-task-${id}`, 'false');
+        localStorage.removeItem(`hr-task-${id}-time`);
+      }
+      
+      updateStats();
+    }
+    
+    // Update completion statistics
+    function updateStats() {
+      const total = 14;
+      const completed = document.querySelectorAll('input[type="checkbox"]:checked').length;
+      const percentage = Math.round((completed / total) * 100);
+      
+      document.getElementById('taskCount').textContent = `${completed} / ${total} tasks completed`;
+      document.getElementById('completionRate').textContent = `${percentage}%`;
+      
+      // Change color based on percentage
+      const rateElement = document.getElementById('completionRate');
+      if (percentage >= 80) {
+        rateElement.style.color = '#28a745';
+      } else if (percentage >= 50) {
+        rateElement.style.color = '#ffc107';
+      } else {
+        rateElement.style.color = '#dc3545';
+      }
+    }
+    
+    // Export data to Google Sheets (via API)
+    function exportToSheets() {
+      const data = {
+        date: new Date().toLocaleDateString('en-IN'),
+        tasks: []
+      };
+      
+      for (let i = 1; i <= 14; i++) {
+        const completed = localStorage.getItem(`hr-task-${i}`) === 'true';
+        const time = localStorage.getItem(`hr-task-${i}-time`) || '-';
+        data.tasks.push({
+          id: i,
+          completed: completed,
+          time: time
+        });
+      }
+      
+      // Create CSV download
+      let csv = 'Task ID,Task Name,Completed,Completed Time\n';
+      const taskNames = [
+        'Review daily attendance sheet',
+        'Call absentees (max 3 calls)',
+        'Approve time-off requests',
+        'Check late arrivals & document',
+        'Verify shift substitutions',
+        'Morning staff briefing check',
+        'Verify staff grooming/uniform',
+        'Assign floor duties',
+        'Evening staff feedback',
+        'Check mandatory training certifications',
+        'Verify employee documents current',
+        'Log policy changes',
+        'Process payroll adjustments',
+        'Reconcile attendance with payroll'
+      ];
+      
+      for (let i = 1; i <= 14; i++) {
+        csv += `${i},${taskNames[i-1]},${data.tasks[i-1].completed},${data.tasks[i-1].time}\n`;
+      }
+      
+      // Download CSV
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `HR_Checklist_${new Date().toLocaleDateString('en-IN').replace(/-/g,'_')}.csv`;
+      a.click();
+    }
+    
+    // Send email to management
+    function sendEmail() {
+      const completed = document.querySelectorAll('input[type="checkbox"]:checked').length;
+      const total = 14;
+      const percentage = Math.round((completed / total) * 100);
+      
+      const emailBody = `
+HR Daily Checklist Status - ${new Date().toLocaleDateString('en-IN')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Completed: ${completed} tasks
+⏳ Pending: ${total - completed} tasks
+📊 Completion Rate: ${percentage}%
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+View full checklist: 
+https://yourusername.github.io
+      `;
+      
+      // Open email client
+      const subject = `HR Checklist Update - ${completed}/${total} Tasks Completed (${percentage}%)`;
+      window.location.href = `mailto:hrkidsstalk028@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+    }
+    
+    // Load tasks when page loads
+    loadTasks();
+    
+    // Auto-save every 30 seconds
+    setInterval(loadTasks, 30000);
+  </script>
+</body>
+</html>
